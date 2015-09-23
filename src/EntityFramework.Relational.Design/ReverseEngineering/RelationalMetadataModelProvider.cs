@@ -36,8 +36,8 @@ namespace Microsoft.Data.Entity.Relational.Design.ReverseEngineering
         public virtual ILogger Logger { get; }
         public virtual CSharpUtilities CSharpUtilities { get; }
         public virtual ModelUtilities ModelUtilities { get; }
-
         protected abstract IRelationalMetadataExtensionProvider ExtensionsProvider { get; }
+        protected TableSelectionSet _tableSelectionSet = TableSelectionSet.InclusiveAll;
 
         protected RelationalMetadataModelProvider([NotNull] ILogger logger,
             [NotNull] ModelUtilities modelUtilities, [NotNull] CSharpUtilities cSharpUtilities)
@@ -50,9 +50,15 @@ namespace Microsoft.Data.Entity.Relational.Design.ReverseEngineering
             ModelUtilities = modelUtilities;
         }
 
-        public virtual IModel GenerateMetadataModel([NotNull] string connectionString)
+        public virtual IModel GenerateMetadataModel(
+            [NotNull] string connectionString, [CanBeNull] TableSelectionSet tableSelectionSet)
         {
             Check.NotEmpty(connectionString, nameof(connectionString));
+
+            if (tableSelectionSet != null)
+            {
+                _tableSelectionSet = tableSelectionSet;
+            }
 
             var relationalModel = ConstructRelationalModel(connectionString);
 

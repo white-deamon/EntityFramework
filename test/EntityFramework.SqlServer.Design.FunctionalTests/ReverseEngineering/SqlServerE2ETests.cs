@@ -22,6 +22,24 @@ namespace Microsoft.Data.Entity.SqlServer.Design.FunctionalTests.ReverseEngineer
         public virtual string TestProjectDir => Path.Combine("E2ETest", "Output");
         public virtual string TestSubDir => "SubDir";
         public virtual string CustomizedTemplateDir => Path.Combine("E2ETest", "CustomizedTemplate", "Dir");
+        public static TableSelectionSet Filter
+        {
+            get
+            {
+                var filter = new TableSelectionSet();
+                filter.AddSelections(new TableSelection[]
+                {
+                    new TableSelection()
+                    {
+                        Schema = "dbo",
+                        Table = "FilteredOut",
+                        Exclude = true
+                    }
+                });
+
+                return filter;
+            }
+        }
 
         public SqlServerE2ETests(SqlServerE2EFixture fixture, ITestOutputHelper output)
             : base(output)
@@ -29,8 +47,8 @@ namespace Microsoft.Data.Entity.SqlServer.Design.FunctionalTests.ReverseEngineer
         }
 
         protected override E2ECompiler GetCompiler() => new E2ECompiler
-        {
-            NamedReferences =
+            {
+                NamedReferences =
                     {
                         "EntityFramework.Core",
                         "EntityFramework.Relational",
@@ -42,7 +60,7 @@ namespace Microsoft.Data.Entity.SqlServer.Design.FunctionalTests.ReverseEngineer
                         "System.ComponentModel.Annotations",
 #else
                     },
-            References =
+                References =
                     {
                         MetadataReference.CreateFromFile(
                             Assembly.Load(new AssemblyName(
@@ -81,7 +99,8 @@ namespace Microsoft.Data.Entity.SqlServer.Design.FunctionalTests.ReverseEngineer
                 ConnectionString = _connectionString,
                 ProjectPath = TestProjectDir,
                 ProjectRootNamespace = TestNamespace,
-                RelativeOutputPath = TestSubDir
+                RelativeOutputPath = TestSubDir,
+                TableSelectionSet = Filter,
             };
 
             var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
@@ -126,6 +145,7 @@ namespace Microsoft.Data.Entity.SqlServer.Design.FunctionalTests.ReverseEngineer
                 ProjectRootNamespace = TestNamespace,
                 RelativeOutputPath = null, // not used for this test
                 UseFluentApiOnly = true,
+                TableSelectionSet = Filter,
             };
 
             var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
