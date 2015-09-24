@@ -96,6 +96,7 @@
     <Compile Include="ReverseEngineering\RelationalMetadataModelProvider.cs" />
     <Compile Include="ReverseEngineering\TableSelection.cs" />
     <Compile Include="ReverseEngineering\TableSelectionSet.cs" />
+    <Compile Include="ReverseEngineering\TableSelectionSetBuilder.cs" />
     <Compile Include="Utilities\CSharpUtilities.cs" />
     <Compile Include="Utilities\ModelUtilities.cs" />
     <Compile Include="Utilities\PlatformHelper.cs" />

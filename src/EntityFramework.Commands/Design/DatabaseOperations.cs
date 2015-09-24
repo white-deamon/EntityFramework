@@ -48,6 +48,7 @@ namespace Microsoft.Data.Entity.Design
         public virtual Task<ReverseEngineerFiles> ReverseEngineerAsync(
             [NotNull] string provider,
             [NotNull] string connectionString,
+            [CanBeNull] string tableFilters,
             [CanBeNull] string outputDir,
             bool useFluentApiOnly,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -62,12 +63,14 @@ namespace Microsoft.Data.Entity.Design
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var generator = serviceProvider.GetRequiredService<ReverseEngineeringGenerator>();
+            var tableSelectionSet = TableSelectionSetBuilder.BuildFromString(tableFilters);
             var configuration = new ReverseEngineeringConfiguration
             {
                 ConnectionString = connectionString,
                 ProjectPath = _projectDir,
                 ProjectRootNamespace = _rootNamespace,
                 RelativeOutputPath = outputDir,
+                TableSelectionSet = tableSelectionSet,
                 UseFluentApiOnly = useFluentApiOnly
             };
 

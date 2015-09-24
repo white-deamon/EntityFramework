@@ -325,6 +325,9 @@ Register-TabExpansion Scaffold-DbContext @{
 .PARAMETER Provider
     Specifies the provider to use. For example, EntityFramework.SqlServer.
 
+.PARAMETER Tables
+    Selects for which tables to generate classes. The argument is a comma-separated list of schema:table entries where either schema or table can be * to indicate 'any'.
+
 .PARAMETER OutputSubDirectory
     Specifies the sub-directory of the project to use to output the classes. If omitted, the top-level project directory is used.
 
@@ -344,6 +347,7 @@ function Scaffold-DbContext {
         [string] $Connection,
         [Parameter(Position = 1, Mandatory = $true)]
         [string] $Provider,
+        [string] $Tables,
         [string] $OutputSubDirectory,
         [switch] $FluentApi,
         [string] $Project)
@@ -355,6 +359,7 @@ function Scaffold-DbContext {
         connectionString = $Connection
         provider = $Provider
         relativeOutputDir = $OutputSubDirectory
+        tableFilters = $Tables
         useFluentApiOnly = [bool]$FluentApi
     }
 

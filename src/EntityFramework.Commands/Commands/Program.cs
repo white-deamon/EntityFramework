@@ -143,6 +143,10 @@ namespace Microsoft.Data.Entity.Commands
                             var provider = scaffold.Argument(
                                 "[provider]",
                                 "The provider to use. For example, EntityFramework.SqlServer");
+                            var tableFilters = scaffold.Option(
+                                "-t|--tables <filter>",
+                                "Selects for which tables to generate classes. "
+                                + "<filter> is a comma-separated list of schema:table entries where either schema or table can be * to indicate 'any'.");
                             var relativeOutputPath = scaffold.Option(
                                 "-o|--output-path <path>",
                                 "Relative path to the sub-directory of the project where the classes should be output. If omitted, the top-level project directory is used.");
@@ -173,6 +177,7 @@ namespace Microsoft.Data.Entity.Commands
                                     await ReverseEngineerAsync(
                                         connection.Value,
                                         provider.Value,
+                                        tableFilters.Value(),
                                         relativeOutputPath.Value(),
                                         useFluentApiOnly.HasValue(),
                                         _applicationShutdown.ShutdownRequested);
@@ -368,12 +373,13 @@ namespace Microsoft.Data.Entity.Commands
         public virtual async Task ReverseEngineerAsync(
             [NotNull] string connectionString,
             [NotNull] string providerAssemblyName,
+            [CanBeNull] string tableFilters,
             [CanBeNull] string relativeOutputDirectory,
             bool useFluentApiOnly,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             await _databaseOperations.Value.ReverseEngineerAsync(
-                providerAssemblyName, connectionString,
+                providerAssemblyName, connectionString, tableFilters,
                 relativeOutputDirectory, useFluentApiOnly);
 
             _logger.Value.LogInformation("Done");

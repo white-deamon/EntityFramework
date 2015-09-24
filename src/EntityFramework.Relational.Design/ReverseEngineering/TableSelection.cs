@@ -16,6 +16,16 @@ namespace Microsoft.Data.Entity.Relational.Design.ReverseEngineering
         public virtual string Table { get;[param: NotNull] set; } = Any;
         public virtual bool Exclude { get; set; }
 
+        public TableSelection([NotNull] string schema = Any, [NotNull] string table = Any, bool exclude = false)
+        {
+            Check.NotEmpty(table, nameof(table));
+            Check.NotEmpty(schema, nameof(schema));
+
+            Schema = schema;
+            Table = table;
+            Exclude = exclude;
+        }
+
         public override bool Equals(object o)
         {
             if (o == null)
